@@ -29,7 +29,7 @@ export const BottomBar = () => {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/pipelines/parse', {
+      const response = await fetch('/api/pipelines/parse', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
