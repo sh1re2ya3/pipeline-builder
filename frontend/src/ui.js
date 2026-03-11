@@ -45,7 +45,7 @@ const selector = (state) => ({
 export const PipelineUI = () => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const [colorMode, setColorMode] = useState("light");
+  const [ colorMode, setColorMode] = useState("light");
   const {
     nodes,
     edges,
@@ -75,7 +75,7 @@ export const PipelineUI = () => {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [colorMode]);
 
   const getInitNodeData = (nodeID, type) => {
     let nodeData = { id: nodeID, nodeType: `${type}` };
@@ -114,7 +114,7 @@ export const PipelineUI = () => {
         addNode(newNode);
       }
     },
-    [reactFlowInstance],
+    [addNode, getNodeID, reactFlowInstance],
   );
 
   const onDragOver = useCallback((event) => {
