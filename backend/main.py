@@ -1,4 +1,7 @@
+import os
+
 from fastapi import FastAPI, Form
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List, Dict
 from fastapi.staticfiles import StaticFiles
@@ -17,10 +20,17 @@ app.add_middleware(
 class Pipeline(BaseModel):
     nodes: List[Dict]
     edges: List[Dict]
+    
+# React build folder
+build_dir = os.path.join(os.getcwd(), "frontend", "build")
 
-@app.get('/')
-def read_root():
-    return {'Ping': 'Pong'}
+# Serve static assets
+app.mount("/static", StaticFiles(directory=os.path.join(build_dir, "static")), name="static")
+
+# Serve React app
+@app.get("/{full_path:path}")
+async def serve_react(full_path: str):
+    return FileResponse(os.path.join(build_dir, "index.html"))
 
 @app.post('/pipelines/parse')
 def parse_pipeline(pipeline: Pipeline):
@@ -72,5 +82,3 @@ def is_dag(nodes, edges):
 
     return True
 
-
-app.mount("/", StaticFiles(directory="frontend/build", html=True), name="static")
