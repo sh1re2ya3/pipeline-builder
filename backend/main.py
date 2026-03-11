@@ -24,12 +24,24 @@ class Pipeline(BaseModel):
 # React build folder
 build_dir = os.path.join(os.getcwd(), "frontend", "build")
 
-# Serve static assets
+# Serve React static files
 app.mount("/static", StaticFiles(directory=os.path.join(build_dir, "static")), name="static")
 
-# Serve React app
+
+# Root route
+@app.get("/")
+async def serve_root():
+    return FileResponse(os.path.join(build_dir, "index.html"))
+
+
+# Catch-all for React Router
 @app.get("/{full_path:path}")
 async def serve_react(full_path: str):
+    file_path = os.path.join(build_dir, full_path)
+
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+
     return FileResponse(os.path.join(build_dir, "index.html"))
 
 @app.post('/pipelines/parse')
